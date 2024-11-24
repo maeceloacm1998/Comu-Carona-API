@@ -20,8 +20,29 @@ repositories {
 }
 
 dependencies {
+	// MYSQL DATABASE
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	implementation("mysql:mysql-connector-java:8.0.33")
+
+	// FLYWAY
+	implementation("org.flywaydb:flyway-core:9.22.0")
+	implementation("org.flywaydb:flyway-mysql:9.22.0")
+
+	// DOZER
+	implementation("net.sf.dozer:dozer:5.5.1")
+
+	// Swagger
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
+
+	// JWT
+	implementation("io.jsonwebtoken:jjwt-api:0.11.5")
+	implementation("com.auth0:java-jwt:4.2.1")
+	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
+	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
+
+	// SPRING BOOT
 	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
