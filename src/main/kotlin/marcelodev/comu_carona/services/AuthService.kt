@@ -38,19 +38,27 @@ class AuthService {
 
     fun signin(data: AccountCredentialsVO) : ResponseEntity<*> {
         logger.info("Trying log user ${data.username}")
+
         return try {
+            val codeEnvironment = System.getenv("ENTER_CODE")
             val username = data.username
-            val password = data.password
+            val password = data.username
+
+            if(data.code?.equals(codeEnvironment) == false) {
+                logger.warning("Invalid environment code")
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Código de ambiente inválido")
+            }
+
             authenticationManager.authenticate(UsernamePasswordAuthenticationToken(username, password))
             val user = repository.findByUsername(username)
             val tokenResponse: TokenVO = if (user != null) {
                 tokenProvider.createAccessToken(username!!, user.roles)
             } else {
-                throw UsernameNotFoundException("Username $username not found!")
+                throw UsernameNotFoundException("Username $username não existe!")
             }
             ResponseEntity.ok(tokenResponse)
         } catch (e: AuthenticationException) {
-            throw BadCredentialsException("Invalid username or password supplied!")
+            throw BadCredentialsException("Username ou Password não existem!")
         }
     }
 
@@ -73,7 +81,7 @@ class AuthService {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Username already exists")
         }
 
-        val encryptedPassword = passwordEncoder.encode(data.password)
+        val encryptedPassword = passwordEncoder.encode(data.username)
         val newUser = User().apply {
             userName = data.username
             password = encryptedPassword

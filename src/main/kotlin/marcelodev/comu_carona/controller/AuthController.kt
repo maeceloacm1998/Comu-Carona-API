@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*
 import marcelodev.comu_carona.v1.AccountCredentialsVO
 import marcelodev.comu_carona.v1.TokenVO
 import marcelodev.comu_carona.v1.UpdateRegisterVO
+import org.springframework.security.core.AuthenticationException
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 
 @Tag(name = "Authentication Endpoint")
 @RestController
@@ -39,21 +41,41 @@ class AuthController {
                 ]
             ),
             ApiResponse(
-                responseCode = "403",
-                description = "Invalid username or password"
+                responseCode = "400",
+                description = "Username is required"
             ),
             ApiResponse(
                 responseCode = "400",
-                description = "Invalid client request"
-            )
+                description = "Code is required"
+            ),
+            ApiResponse(
+                responseCode = "403",
+                description = "Username ou Password não existem!\n"
+            ),
+            ApiResponse(
+                responseCode = "401",
+                description = "Código de ambiente inválido"
+            ),
         ]
     )
     @PostMapping(value = ["/signin"])
     fun signin(@RequestBody data: AccountCredentialsVO?): ResponseEntity<*> {
-        return if (data!!.username.isNullOrBlank() || data.password.isNullOrBlank())
-            ResponseEntity.status(HttpStatus.FORBIDDEN)
-                .body("Invalid client request")
-        else authService.signin(data)
+        try {
+            return data.let {
+                when {
+                    it?.username.isNullOrBlank() -> ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("Username is required")
+                    it?.code.isNullOrBlank() -> ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("Code is required")
+
+                    else -> authService.signin(checkNotNull(it))
+                }
+            }
+        } catch (e: AuthenticationException) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.message)
+        } catch (e: UsernameNotFoundException) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.message)
+        }
     }
 
     @Operation(
@@ -77,7 +99,7 @@ class AuthController {
     )
     @PostMapping(value = ["/signup"])
     fun signup(@RequestBody data: AccountCredentialsVO?): ResponseEntity<*> {
-        return if (data!!.username.isNullOrBlank() || data.password.isNullOrBlank()) {
+        return if (data!!.username.isNullOrBlank()) {
             ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid client request")
         } else {
             authService.createUser(data)
