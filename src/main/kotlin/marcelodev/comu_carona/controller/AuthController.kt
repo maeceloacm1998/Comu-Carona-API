@@ -50,7 +50,7 @@ class AuthController {
             ),
             ApiResponse(
                 responseCode = "403",
-                description = "Username ou Password não existem!\n"
+                description = "Username ou Password não existem!"
             ),
             ApiResponse(
                 responseCode = "401",
@@ -65,6 +65,7 @@ class AuthController {
                 when {
                     it?.username.isNullOrBlank() -> ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("Username is required")
+
                     it?.code.isNullOrBlank() -> ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("Code is required")
 
@@ -85,50 +86,24 @@ class AuthController {
         responses = [
             ApiResponse(
                 responseCode = "200",
-                description = "User created successfully",
+                description = "Usuario criado com sucesso",
             ),
             ApiResponse(
                 responseCode = "409",
-                description = "Username already exists"
+                description = "Usuario já existe"
             ),
             ApiResponse(
                 responseCode = "400",
-                description = "Invalid client request"
+                description = "Campos obrigatórios não preenchidos"
             )
         ]
     )
-    @PostMapping(value = ["/signup"])
-    fun signup(@RequestBody data: AccountCredentialsVO?): ResponseEntity<*> {
-        return if (data!!.username.isNullOrBlank()) {
-            ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid client request")
-        } else {
-            authService.createUser(data)
-        }
-    }
-
-
-    @Operation(
-        summary = "Atualizar dados do usuário",
-        description = "Essa função serve para atualizar os dados do usuário",
-        tags = ["Auth"],
-        responses = [
-            ApiResponse(
-                responseCode = "200",
-                description = "User updated successfully",
-            ),
-            ApiResponse(
-                responseCode = "404",
-                description = "User not found"
-            ),
-            ApiResponse(
-                responseCode = "400",
-                description = "Invalid client request"
-            )
-        ]
-    )
-    @PutMapping(value = ["/update/{username}"])
-    fun updateRegister(@PathVariable username: String, @RequestBody data: UpdateRegisterVO): ResponseEntity<*> {
+    @PostMapping(value = ["/signup/{username}"])
+    fun signup(@PathVariable username: String?, @RequestBody data: UpdateRegisterVO): ResponseEntity<*> {
         return when {
+            username.isNullOrBlank() -> ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Username is required")
+
             data.fullName.isNullOrBlank() -> ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Full name is required")
 
@@ -142,8 +117,8 @@ class AuthController {
                 .body("Photo URL is required")
 
             else -> {
-                authService.updateRegister(data, username)
-                ResponseEntity.ok("User updated successfully")
+                authService.createUser(data, username)
+                ResponseEntity.ok("User created successfully")
             }
         }
     }

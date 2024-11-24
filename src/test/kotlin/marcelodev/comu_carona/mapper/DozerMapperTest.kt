@@ -3,8 +3,8 @@ package marcelodev.comu_carona.mapper
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import teste_spring.teste.data.vo.v1.ExampleVO
 import marcelodev.comu_carona.models.Example
+import marcelodev.comu_carona.v1.ExampleVO
 
 class DozerMapperTest {
 

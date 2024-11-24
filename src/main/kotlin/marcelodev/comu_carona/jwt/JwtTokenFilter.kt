@@ -21,7 +21,6 @@ class JwtTokenFilter(private val tokenProvider: JwtTokenProvider)
             }
             chain.doFilter(request, response)
         } catch (e: TokenExpiredException) {
-            // Propagate the TokenExpiredException
             response?.characterEncoding = "UTF-8"
             response?.writer?.write("{\"error\": \"Token is expired\"}")
             (response as HttpServletResponse).status = HttpServletResponse.SC_UNAUTHORIZED

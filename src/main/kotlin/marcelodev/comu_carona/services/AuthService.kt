@@ -36,7 +36,7 @@ class AuthService {
 
     private val logger = Logger.getLogger(AuthService::class.java.name)
 
-    fun signin(data: AccountCredentialsVO) : ResponseEntity<*> {
+    fun signin(data: AccountCredentialsVO): ResponseEntity<*> {
         logger.info("Trying log user ${data.username}")
 
         return try {
@@ -44,25 +44,32 @@ class AuthService {
             val username = data.username
             val password = data.username
 
-            if(data.code?.equals(codeEnvironment) == false) {
+            if (data.code?.equals(codeEnvironment) == false) {
                 logger.warning("Invalid environment code")
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Código de ambiente inválido")
             }
 
-            authenticationManager.authenticate(UsernamePasswordAuthenticationToken(username, password))
-            val user = repository.findByUsername(username)
-            val tokenResponse: TokenVO = if (user != null) {
-                tokenProvider.createAccessToken(username!!, user.roles)
-            } else {
-                throw UsernameNotFoundException("Username $username não existe!")
-            }
+            val tokenResponse = authUser(username!!, password!!)
+            logger.info("User logged successfully")
             ResponseEntity.ok(tokenResponse)
         } catch (e: AuthenticationException) {
             throw BadCredentialsException("Username ou Password não existem!")
         }
     }
 
-    fun refreshToken(username: String, refreshToken: String) : ResponseEntity<*> {
+    private fun authUser(username: String, password: String): TokenVO {
+        authenticationManager.authenticate(UsernamePasswordAuthenticationToken(username, password))
+        val user = repository.findByUsername(username)
+        val tokenResponse: TokenVO = if (user != null) {
+            tokenProvider.createAccessToken(username, user.roles)
+        } else {
+            throw UsernameNotFoundException("Username $username not found!")
+        }
+
+        return tokenResponse
+    }
+
+    fun refreshToken(username: String, refreshToken: String): ResponseEntity<*> {
         logger.info("Trying get refresh token to user $username")
 
         val user = repository.findByUsername(username)
@@ -74,16 +81,31 @@ class AuthService {
         return ResponseEntity.ok(tokenResponse)
     }
 
-    fun createUser(data: AccountCredentialsVO): ResponseEntity<*> {
-        val user = repository.findByUsername(data.username)
+    fun createUser(data: UpdateRegisterVO, username: String): ResponseEntity<*> {
+        logger.info("Trying create user")
+        val user = repository.findByUsername(username)
 
         if (user != null) {
+            logger.warning("Username already exists")
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Username already exists")
         }
 
-        val encryptedPassword = passwordEncoder.encode(data.username)
-        val newUser = User().apply {
-            userName = data.username
+        val newUser = createUserWithData(username, data)
+        repository.save(newUser)
+        val tokenResponse = authUser(username, username)
+
+        logger.info("User created successfully")
+        return ResponseEntity.ok(tokenResponse)
+    }
+
+    private fun createUserWithData(username: String, data: UpdateRegisterVO): User {
+        val encryptedPassword = passwordEncoder.encode(username)
+        val user = User().apply {
+            setFullName(data.fullName!!)
+            setBirthDate(data.birthDate!!)
+            setPhoneNumber(data.phoneNumber!!)
+            setPhotoUrl(data.photoUrl!!)
+            userName = username
             password = encryptedPassword
             accountNonExpired = true
             accountNonLocked = true
@@ -92,23 +114,6 @@ class AuthService {
             permissions = mutableListOf() // Adicione permissões conforme necessário
         }
 
-        repository.save(newUser)
-        return ResponseEntity.status(HttpStatus.CREATED).body("User created successfully")
-    }
-
-    fun updateRegister(data: UpdateRegisterVO, username: String): ResponseEntity<*> {
-        logger.info("Trying update user $username")
-        val user = repository.findByUsername(username)
-            ?: return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found")
-
-        user.apply {
-            setFullName(data.fullName!!)
-            setBirthDate(data.birthDate!!)
-            setPhoneNumber(data.phoneNumber!!)
-            setPhotoUrl(data.photoUrl!!)
-        }
-
-        repository.save(user)
-        return ResponseEntity.status(HttpStatus.OK).body("User updated successfully")
+        return user
     }
 }
