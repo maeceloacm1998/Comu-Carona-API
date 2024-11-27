@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import marcelodev.comu_carona.models.User
 import marcelodev.comu_carona.services.CarRideService
 import marcelodev.comu_carona.v1.CarRideVO
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.GetMapping
@@ -37,18 +38,43 @@ class CarRideController(
             ApiResponse(
                 responseCode = "401",
                 description = "Unauthorized"
-            )
+            ),
         ]
     )
     @PostMapping("/create", produces = ["application/json"])
     fun createCarRide(@RequestBody data: CarRideVO): ResponseEntity<*> {
         val authentication: User = SecurityContextHolder.getContext().authentication.principal as User
 
-        carRideService.createCarRide(
-            carRide = data,
-            userId = authentication.getUserId()
-        )
-        return ResponseEntity.status(201).body("Car ride created successfully")
+        return when {
+            data.carColor.isNullOrBlank() -> ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Username is required")
+
+            data.carModel.isNullOrBlank() -> ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("CarModel is required")
+
+            data.carPlate.isNullOrBlank() -> ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("CarPlate is required")
+
+            data.destinationAddress.isNullOrBlank() -> ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("DestinationAddress is required")
+
+            data.waitingAddress.isNullOrBlank() -> ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("WaitingAddress is required")
+
+            data.hour.isNullOrBlank() -> ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Hour is required")
+
+            data.quantitySeats == null -> ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("QuantitySeats is required")
+
+            else -> {
+                carRideService.createCarRide(
+                    carRide = data,
+                    userId = authentication.getUserId()
+                )
+                return ResponseEntity.ok("Car ride created successfully")
+            }
+        }
     }
 
     @Operation(
