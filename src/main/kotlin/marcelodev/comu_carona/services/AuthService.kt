@@ -94,7 +94,8 @@ class AuthService {
         repository.save(newUser)
         val tokenResponse = authUser(username, username)
 
-        logger.info("User created successfully")
+        logger.info("User created successfully, logged in")
+        logger.info("the token is: ${tokenResponse.accessToken}")
         return ResponseEntity.ok(tokenResponse)
     }
 

@@ -1,5 +1,6 @@
 package marcelodev.comu_carona.config
 
+import marcelodev.comu_carona.jwt.JwtAuthenticationEntryPoint
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -22,7 +23,9 @@ import marcelodev.comu_carona.jwt.JwtTokenProvider
 
 @EnableWebSecurity
 @Configuration
-class SecurityConfig {
+class SecurityConfig(
+    private val jwtAuthenticationEntryPoint: JwtAuthenticationEntryPoint
+) {
 
     @Autowired
     private lateinit var tokenProvider: JwtTokenProvider
@@ -55,6 +58,7 @@ class SecurityConfig {
                 SessionManagementConfigurer<HttpSecurity?> ->
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             }
+            .exceptionHandling { it.authenticationEntryPoint(jwtAuthenticationEntryPoint) }
             .authorizeHttpRequests {
                 authorizeHttpRequests -> authorizeHttpRequests
                     .requestMatchers(

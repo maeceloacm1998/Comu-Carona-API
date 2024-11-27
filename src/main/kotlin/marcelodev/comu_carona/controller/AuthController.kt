@@ -117,8 +117,8 @@ class AuthController {
                 .body("Photo URL is required")
 
             else -> {
-                authService.createUser(data, username)
-                ResponseEntity.ok("User created successfully")
+                val auth = authService.createUser(data, username)
+                ResponseEntity.ok(auth.body)
             }
         }
     }
