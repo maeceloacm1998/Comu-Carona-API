@@ -24,7 +24,8 @@ class ModelMapperTest {
             carColor = "Red",
             carPlate = "ABC-1234",
             quantitySeats = 4,
-            address = "123 Main St",
+            waitingAddress = "Rua A",
+            destinationAddress = "Rua B",
             hour = "10:00 AM",
             status = "IN_PROGRESS",
             isTwoPassengersBehind = true
@@ -36,7 +37,8 @@ class ModelMapperTest {
         assertEquals(carRide.carColor, carRideVO.carColor)
         assertEquals(carRide.carPlate, carRideVO.carPlate)
         assertEquals(carRide.quantitySeats, carRideVO.quantitySeats)
-        assertEquals(carRide.address, carRideVO.address)
+        assertEquals(carRide.waitingAddress, carRideVO.waitingAddress)
+        assertEquals(carRide.destinationAddress, carRideVO.destinationAddress)
         assertEquals(carRide.hour, carRideVO.hour)
         assertEquals(carRide.status, carRideVO.status)
         assertEquals(carRide.isTwoPassengersBehind, carRideVO.isTwoPassengersBehind)
