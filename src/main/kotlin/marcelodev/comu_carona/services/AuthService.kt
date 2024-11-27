@@ -59,7 +59,7 @@ class AuthService {
 
     private fun authUser(username: String, password: String): TokenVO {
         authenticationManager.authenticate(UsernamePasswordAuthenticationToken(username, password))
-        val user = repository.findByUsername(username)
+        val user = repository.findByUserId(username)
         val tokenResponse: TokenVO = if (user != null) {
             tokenProvider.createAccessToken(username, user.roles)
         } else {
@@ -72,7 +72,7 @@ class AuthService {
     fun refreshToken(username: String, refreshToken: String): ResponseEntity<*> {
         logger.info("Trying get refresh token to user $username")
 
-        val user = repository.findByUsername(username)
+        val user = repository.findByUserId(username)
         val tokenResponse: TokenVO = if (user != null) {
             tokenProvider.refreshToken(refreshToken)
         } else {
@@ -83,7 +83,7 @@ class AuthService {
 
     fun createUser(data: UpdateRegisterVO, username: String): ResponseEntity<*> {
         logger.info("Trying create user")
-        val user = repository.findByUsername(username)
+        val user = repository.findByUserId(username)
 
         if (user != null) {
             logger.warning("Username already exists")
@@ -101,17 +101,17 @@ class AuthService {
     private fun createUserWithData(username: String, data: UpdateRegisterVO): User {
         val encryptedPassword = passwordEncoder.encode(username)
         val user = User().apply {
-            setFullName(data.fullName!!)
+            setUserId(username)
+            setUsername(data.fullName!!)
             setBirthDate(data.birthDate!!)
             setPhoneNumber(data.phoneNumber!!)
             setPhotoUrl(data.photoUrl!!)
-            userName = username
-            password = encryptedPassword
-            accountNonExpired = true
-            accountNonLocked = true
-            credentialsNonExpired = true
-            enabled = true
-            permissions = mutableListOf() // Adicione permissões conforme necessário
+            this.password = encryptedPassword
+            this.accountNonExpired = true
+            this.accountNonLocked = true
+            this.credentialsNonExpired = true
+            this.enabled = true
+            this.permissions = mutableListOf()
         }
 
         return user

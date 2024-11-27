@@ -9,6 +9,6 @@ import marcelodev.comu_carona.models.User
 @Repository
 interface UserRepository : JpaRepository<User?, Long?> {
 
-    @Query("SELECT u FROM User u WHERE u.userName =:userName")
-    fun findByUsername(@Param("userName") userName: String?): User?
+    @Query("SELECT u FROM User u WHERE u.userId =:userName")
+    fun findByUserId(@Param("userName") userId: String?): User?
 }

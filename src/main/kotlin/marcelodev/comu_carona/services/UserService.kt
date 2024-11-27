@@ -16,7 +16,7 @@ class UserService(
     override fun loadUserByUsername(username: String?): UserDetails {
         logger.info("Finding User by id: $username")
 
-        val user = userRepository.findByUsername(username)
+        val user = userRepository.findByUserId(username)
             ?: throw UsernameNotFoundException("No records found for this ID")
 
         return user

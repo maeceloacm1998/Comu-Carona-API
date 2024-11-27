@@ -13,11 +13,11 @@ class User : UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long = 0
 
-    @Column(name = "user_name", unique = true)
-    var userName: String? = null
+    @Column(name = "user_id", unique = true)
+    private var userId: String? = null
 
-    @Column(name = "full_name")
-    private var fullName: String? = null
+    @Column(name = "username")
+    private var username: String? = null
 
     @Column(name = "birth_date")
     private var birthDate: String? = null
@@ -73,10 +73,6 @@ class User : UserDetails {
         this.password = password
     }
 
-    fun setFullName(fullName: String) {
-        this.fullName = fullName
-    }
-
     fun setBirthDate(birthDate: String) {
         this.birthDate = birthDate
     }
@@ -89,8 +85,16 @@ class User : UserDetails {
         this.photoUrl = photoUrl
     }
 
+    fun setUserId(userId: String) {
+        this.userId = userId
+    }
+
     override fun getUsername(): String {
-        return userName!!
+        return username!!
+    }
+
+    fun setUsername(username: String) {
+        this.username = username
     }
 
     override fun isAccountNonExpired(): Boolean {
