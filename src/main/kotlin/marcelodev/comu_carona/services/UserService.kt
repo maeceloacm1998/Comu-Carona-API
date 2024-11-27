@@ -11,7 +11,7 @@ import java.util.logging.Logger
 class UserService(
     private val userRepository: UserRepository
 ): UserDetailsService {
-    private val logger = Logger.getLogger(ExampleService::class.java.name)
+    private val logger = Logger.getLogger(UserService::class.java.name)
 
     override fun loadUserByUsername(username: String?): UserDetails {
         logger.info("Finding User by id: $username")

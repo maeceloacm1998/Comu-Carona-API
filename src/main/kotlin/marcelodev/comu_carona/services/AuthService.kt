@@ -92,6 +92,7 @@ class AuthService {
 
         val newUser = createUserWithData(username, data)
         repository.save(newUser)
+
         val tokenResponse = authUser(username, username)
 
         logger.info("User created successfully, logged in")

@@ -4,27 +4,18 @@ import jakarta.persistence.*
 import java.time.LocalDateTime
 
 @Entity
-data class CarRide(
+@Table(name = "car_ride")
+data class CarRide (
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0,
-
-    var userId: String? = null,
-
+    var id: Long = 0,
+    var userId: String = "",
     var createdAt: LocalDateTime = LocalDateTime.now(),
-
-    var carModel: String? = null,
-
-    var carColor: String? = null,
-
-    var carPlate: String? = null,
-
-    var quantitySeats: Int? = null,
-
-    var address: String? = null,
-
-    var hour: String? = null,
-
-    var status: String? = null,
-
-    var isTwoPassengersBehind: Boolean = false,
+    var carModel: String = "",
+    var carColor: String = "",
+    var carPlate: String = "",
+    var quantitySeats: Int = 0,
+    var address: String = "",
+    var hour: String = "",
+    var status: String = "",
+    var isTwoPassengersBehind: Boolean = false
 )

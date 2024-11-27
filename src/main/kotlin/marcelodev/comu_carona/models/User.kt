@@ -85,6 +85,10 @@ class User : UserDetails {
         this.photoUrl = photoUrl
     }
 
+    fun getUserId(): String {
+        return userId!!
+    }
+
     fun setUserId(userId: String) {
         this.userId = userId
     }

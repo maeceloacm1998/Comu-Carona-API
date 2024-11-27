@@ -4,6 +4,7 @@ plugins {
 	id("org.springframework.boot") version "3.3.5"
 	id("io.spring.dependency-management") version "1.1.6"
 	kotlin("plugin.jpa") version "1.9.25"
+	kotlin("kapt") version "1.9.25"
 }
 
 group = "marcelodev"
@@ -29,7 +30,7 @@ dependencies {
 	implementation("org.flywaydb:flyway-mysql:9.22.0")
 
 	// DOZER
-	implementation("net.sf.dozer:dozer:5.5.1")
+	implementation("org.modelmapper:modelmapper:3.1.0")
 
 	// Swagger
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
