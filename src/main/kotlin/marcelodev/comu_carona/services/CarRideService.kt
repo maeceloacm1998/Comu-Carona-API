@@ -5,9 +5,7 @@ import marcelodev.comu_carona.mapper.CustomMapper
 import marcelodev.comu_carona.models.CarRide
 import marcelodev.comu_carona.models.enums.CarRideState
 import marcelodev.comu_carona.repository.CarRideRepository
-import marcelodev.comu_carona.v1.rider.AvailableCarRidesVO
-import marcelodev.comu_carona.v1.rider.CarRideVO
-import marcelodev.comu_carona.v1.rider.parseRideToAvailableCarRidesVO
+import marcelodev.comu_carona.v1.rider.*
 import org.springframework.stereotype.Service
 import java.util.logging.Logger
 
@@ -19,6 +17,13 @@ class CarRideService(
 
     private val logger = Logger.getLogger(CarRideService::class.java.name)
 
+
+    /**
+     * Create a car ride
+     * @param carRide CarRideVO
+     * @param userId String
+     * @return CarRide
+     */
     fun createCarRide(
         carRide: CarRideVO,
         userId: String
@@ -35,6 +40,13 @@ class CarRideService(
         return carRideRepository.save(carRideEntity)
     }
 
+
+    /**
+     * Find last car ride by user id
+     * @param userId String
+     * @return CarRideVO
+     * @throws ResourceNotFoundException
+     */
     fun findLastCarRideByUserId(userId: String): CarRideVO? {
         logger.info("Finding last car ride by user id: $userId")
         val lastCarRide = carRideRepository.findLastCarRideByUserId(userId)
@@ -44,6 +56,11 @@ class CarRideService(
         return customMapper.parseObject(lastCarRide, CarRideVO::class.java)
     }
 
+    /**
+     * Find all available car rides
+     * @param userId String
+     * @return List<AvailableCarRidesVO>
+     */
     fun availableCarRides(userId: String): List<AvailableCarRidesVO> {
         logger.info("Finding all available car rides")
         val availableCarRides = carRideRepository.findAllAvailableCarRidesExcludingUser(userId)
@@ -59,10 +76,29 @@ class CarRideService(
         return response
     }
 
+    /**
+     * Handle available car rides response
+     * @param availableCarRides List<CarRide>
+     * List of available car rides
+     */
     private fun handleAvailableCarRidesResponse(availableCarRides: List<CarRide>): List<AvailableCarRidesVO> {
         return availableCarRides.map { carRide ->
             carRide.parseRideToAvailableCarRidesVO()
         }
     }
 
+    /**
+     * Find car ride by id
+     * @param id String
+     * @return CarRideVO
+     * @throws ResourceNotFoundException
+     */
+    fun findCarRideById(id: String): DetailsCarRideVO {
+        logger.info("Finding car ride by id: $id")
+        val carRide = carRideRepository.findCarRideById(id)
+            ?: throw ResourceNotFoundException("No records found for this ID")
+
+        logger.info("Car ride found: $carRide")
+        return carRide.parseRideToDetailsCarRideVO()
+    }
 }

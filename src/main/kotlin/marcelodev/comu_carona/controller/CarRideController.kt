@@ -9,11 +9,7 @@ import marcelodev.comu_carona.v1.rider.CarRideVO
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/car-ride/v1")
@@ -129,5 +125,35 @@ class CarRideController(
 
         val availableCarRides = carRideService.availableCarRides(authentication.getUserId())
         return ResponseEntity.ok(availableCarRides)
+    }
+
+    @Operation(
+        summary = "Get car ride details",
+        description = "This function retrieves the details of a car ride",
+        tags = ["Car Ride"],
+        responses = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Car ride details retrieved successfully"
+            ),
+            ApiResponse(
+                responseCode = "400",
+                description = "Invalid data"
+            ),
+            ApiResponse(
+                responseCode = "401",
+                description = "Unauthorized"
+            )
+        ]
+    )
+    @GetMapping("/details/{id}", produces = ["application/json"])
+    fun getCarRideDetails(@PathVariable id: String?): ResponseEntity<*> {
+        if (id.isNullOrBlank()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Id is required")
+        }
+
+        val lastCarRide = carRideService.findCarRideById(id)
+        return ResponseEntity.ok(lastCarRide)
     }
 }
