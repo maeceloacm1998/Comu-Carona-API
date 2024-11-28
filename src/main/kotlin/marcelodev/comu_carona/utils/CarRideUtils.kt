@@ -1,12 +1,16 @@
 package marcelodev.comu_carona.utils
 
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.Period
 import java.time.format.DateTimeFormatter
 import java.util.*
 
 object CarRideUtils {
     private const val DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
+    private const val DATE_FORMAT = "dd/MM/yyyy"
     private const val OUTPUT_DATE_TIME_FORMAT = "EEEE, d 'de' MMMM"
+    private const val OUTPUT_DATE_FORMAT = "dd 'de' MMMM 'de' yyyy"
     private const val LOCALE = "pt"
     private const val LOCALE_BR = "BR"
 
@@ -15,6 +19,15 @@ object CarRideUtils {
         val outputFormatter = DateTimeFormatter.ofPattern(OUTPUT_DATE_TIME_FORMAT, Locale(LOCALE, LOCALE_BR))
         val date = LocalDateTime.parse(dateTime, inputFormatter)
         return date.format(outputFormatter)
+    }
+
+    fun formatBirthDate(birthDate: String): String {
+        val inputFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT)
+        val outputFormatter = DateTimeFormatter.ofPattern(OUTPUT_DATE_FORMAT,  Locale(LOCALE, LOCALE_BR))
+        val date = LocalDate.parse(birthDate, inputFormatter)
+        val currentDate = LocalDate.now()
+        val age = Period.between(date, currentDate).years
+        return "$age anos, ${date.format(outputFormatter)}"
     }
 
     fun createDescription(

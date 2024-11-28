@@ -73,8 +73,16 @@ class User : UserDetails {
         this.password = password
     }
 
+    fun getBirthDate(): String {
+        return birthDate!!
+    }
+
     fun setBirthDate(birthDate: String) {
         this.birthDate = birthDate
+    }
+
+    fun getPhoneNumber(): String {
+        return phoneNumber!!
     }
 
     fun setPhoneNumber(phoneNumber: String) {
