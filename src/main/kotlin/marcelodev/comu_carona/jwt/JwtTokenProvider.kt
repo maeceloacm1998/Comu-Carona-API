@@ -8,7 +8,7 @@ import com.auth0.jwt.exceptions.TokenExpiredException
 import com.auth0.jwt.interfaces.DecodedJWT
 import jakarta.annotation.PostConstruct
 import jakarta.servlet.http.HttpServletRequest
-import marcelodev.comu_carona.v1.TokenVO
+import marcelodev.comu_carona.v1.auth.TokenVO
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken

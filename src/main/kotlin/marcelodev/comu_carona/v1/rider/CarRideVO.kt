@@ -1,4 +1,4 @@
-package marcelodev.comu_carona.v1
+package marcelodev.comu_carona.v1.rider
 
 data class CarRideVO (
     var carModel: String? = "",
@@ -7,7 +7,8 @@ data class CarRideVO (
     var quantitySeats: Int? = 0,
     var waitingAddress: String? = "",
     var destinationAddress: String? = "",
-    var hour: String? = "",
+    var waitingHour: String? = "",
+    var destinationHour: String? = "",
     var status: String? = "",
     var isTwoPassengersBehind: Boolean? = false
 )

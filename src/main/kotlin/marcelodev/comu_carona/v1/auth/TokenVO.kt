@@ -1,4 +1,4 @@
-package marcelodev.comu_carona.v1
+package marcelodev.comu_carona.v1.auth
 
 import java.util.*
 

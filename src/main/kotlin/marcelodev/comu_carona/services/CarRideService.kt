@@ -5,7 +5,9 @@ import marcelodev.comu_carona.mapper.CustomMapper
 import marcelodev.comu_carona.models.CarRide
 import marcelodev.comu_carona.models.enums.CarRideState
 import marcelodev.comu_carona.repository.CarRideRepository
-import marcelodev.comu_carona.v1.CarRideVO
+import marcelodev.comu_carona.v1.rider.AvailableCarRidesVO
+import marcelodev.comu_carona.v1.rider.CarRideVO
+import marcelodev.comu_carona.v1.rider.parseRideToAvailableCarRidesVO
 import org.springframework.stereotype.Service
 import java.util.logging.Logger
 
@@ -26,7 +28,7 @@ class CarRideService(
         val carRideEntity = customMapper.parseObject(carRide, CarRide::class.java)
         carRideEntity.apply {
             this.status = CarRideState.IN_PROGRESS.toString()
-            this.userId = userId
+            this.riderId = userId
         }
 
         logger.info("Car ride created successfully, entity: $carRideEntity")
@@ -41,4 +43,26 @@ class CarRideService(
         logger.info("Last car ride found: $lastCarRide")
         return customMapper.parseObject(lastCarRide, CarRideVO::class.java)
     }
+
+    fun availableCarRides(userId: String): List<AvailableCarRidesVO> {
+        logger.info("Finding all available car rides")
+        val availableCarRides = carRideRepository.findAllAvailableCarRidesExcludingUser(userId)
+
+        if (availableCarRides.isEmpty()) {
+            logger.info("No available car rides found")
+            return emptyList()
+        }
+
+        logger.info("Available car rides found: $availableCarRides")
+        val response = handleAvailableCarRidesResponse(availableCarRides)
+        logger.info("Available car rides response: $response")
+        return response
+    }
+
+    private fun handleAvailableCarRidesResponse(availableCarRides: List<CarRide>): List<AvailableCarRidesVO> {
+        return availableCarRides.map { carRide ->
+            carRide.parseRideToAvailableCarRidesVO()
+        }
+    }
+
 }

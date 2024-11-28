@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
 import marcelodev.comu_carona.models.User
 import marcelodev.comu_carona.services.CarRideService
-import marcelodev.comu_carona.v1.CarRideVO
+import marcelodev.comu_carona.v1.rider.CarRideVO
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
@@ -61,8 +61,11 @@ class CarRideController(
             data.waitingAddress.isNullOrBlank() -> ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("WaitingAddress is required")
 
-            data.hour.isNullOrBlank() -> ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Hour is required")
+            data.waitingHour.isNullOrBlank() -> ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("waitingHour is required")
+
+            data.destinationHour.isNullOrBlank() -> ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("destinationHour is required")
 
             data.quantitySeats == null -> ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("QuantitySeats is required")
@@ -102,5 +105,29 @@ class CarRideController(
 
         val lastCarRide = carRideService.findLastCarRideByUserId(authentication.getUserId())
         return ResponseEntity.ok(lastCarRide)
+    }
+
+
+    @Operation(
+        summary = "Get available car rides",
+        description = "This function retrieves a list of available car rides",
+        tags = ["Car Ride"],
+        responses = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Available car rides retrieved successfully"
+            ),
+            ApiResponse(
+                responseCode = "401",
+                description = "Unauthorized"
+            )
+        ]
+    )
+    @GetMapping("/available", produces = ["application/json"])
+    fun getAvailableCarRides(): ResponseEntity<*> {
+        val authentication: User = SecurityContextHolder.getContext().authentication.principal as User
+
+        val availableCarRides = carRideService.availableCarRides(authentication.getUserId())
+        return ResponseEntity.ok(availableCarRides)
     }
 }

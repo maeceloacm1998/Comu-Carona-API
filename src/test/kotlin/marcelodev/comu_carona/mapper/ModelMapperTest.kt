@@ -2,7 +2,8 @@ package marcelodev.comu_carona.mapper
 
 import marcelodev.comu_carona.models.CarRide
 import marcelodev.comu_carona.models.Example
-import marcelodev.comu_carona.v1.CarRideVO
+import marcelodev.comu_carona.models.User
+import marcelodev.comu_carona.v1.rider.CarRideVO
 import marcelodev.comu_carona.v1.ExampleVO
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.modelmapper.ModelMapper
@@ -18,7 +19,7 @@ class ModelMapperTest {
     fun testCarRideToCarRideVOMapping() {
         val carRide = CarRide(
             id = 1,
-            userId = "user123",
+            riderId = "user123",
             createdAt = LocalDateTime.now(),
             carModel = "Model S",
             carColor = "Red",
@@ -26,8 +27,10 @@ class ModelMapperTest {
             quantitySeats = 4,
             waitingAddress = "Rua A",
             destinationAddress = "Rua B",
-            hour = "10:00 AM",
+            waitingHour = "10:00 AM",
+            destinationHour = "10:00 AM",
             status = "IN_PROGRESS",
+            user = User(),
             isTwoPassengersBehind = true
         )
 
@@ -39,7 +42,8 @@ class ModelMapperTest {
         assertEquals(carRide.quantitySeats, carRideVO.quantitySeats)
         assertEquals(carRide.waitingAddress, carRideVO.waitingAddress)
         assertEquals(carRide.destinationAddress, carRideVO.destinationAddress)
-        assertEquals(carRide.hour, carRideVO.hour)
+        assertEquals(carRide.waitingHour, carRideVO.waitingHour)
+        assertEquals(carRide.destinationHour, carRideVO.destinationHour)
         assertEquals(carRide.status, carRideVO.status)
         assertEquals(carRide.isTwoPassengersBehind, carRideVO.isTwoPassengersBehind)
     }

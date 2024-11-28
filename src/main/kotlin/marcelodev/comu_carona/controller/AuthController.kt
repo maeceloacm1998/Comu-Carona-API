@@ -10,9 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import marcelodev.comu_carona.v1.AccountCredentialsVO
-import marcelodev.comu_carona.v1.TokenVO
-import marcelodev.comu_carona.v1.UpdateRegisterVO
+import marcelodev.comu_carona.v1.auth.AccountCredentialsVO
+import marcelodev.comu_carona.v1.auth.TokenVO
+import marcelodev.comu_carona.v1.auth.UpdateRegisterVO
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 

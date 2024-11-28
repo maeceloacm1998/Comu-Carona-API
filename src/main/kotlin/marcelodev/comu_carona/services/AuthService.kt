@@ -10,9 +10,9 @@ import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
-import marcelodev.comu_carona.v1.AccountCredentialsVO
-import marcelodev.comu_carona.v1.TokenVO
-import marcelodev.comu_carona.v1.UpdateRegisterVO
+import marcelodev.comu_carona.v1.auth.AccountCredentialsVO
+import marcelodev.comu_carona.v1.auth.TokenVO
+import marcelodev.comu_carona.v1.auth.UpdateRegisterVO
 import marcelodev.comu_carona.models.User
 import marcelodev.comu_carona.repository.UserRepository
 import marcelodev.comu_carona.jwt.JwtTokenProvider
