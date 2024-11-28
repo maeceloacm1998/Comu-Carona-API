@@ -2,6 +2,7 @@ package marcelodev.comu_carona.models
 
 import jakarta.persistence.*
 import java.time.LocalDateTime
+import java.util.*
 
 @Entity
 @Table(name = "car_ride")
@@ -10,7 +11,7 @@ data class CarRide(
     var id: Long = 0,
     @Column(name = "rider_id")
     var riderId: String = "",
-    var createdAt: LocalDateTime = LocalDateTime.now(),
+    var createdAt: LocalDateTime? = null,
     var carModel: String = "",
     var carColor: String = "",
     var carPlate: String = "",
@@ -22,7 +23,20 @@ data class CarRide(
     var status: String = "",
     var isTwoPassengersBehind: Boolean = false,
 
+    @Column(name = "uuid", unique = true, nullable = false, updatable = false)
+    var uuid: String? = null,
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "rider_id", referencedColumnName = "user_id", insertable = false, updatable = false)
     var user: User,
-)
+) {
+    @PrePersist
+    fun prePersist() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now()
+        }
+        if (uuid.isNullOrBlank()) {
+            uuid = UUID.randomUUID().toString()
+        }
+    }
+}
