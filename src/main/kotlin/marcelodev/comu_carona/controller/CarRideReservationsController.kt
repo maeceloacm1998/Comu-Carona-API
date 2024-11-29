@@ -1,6 +1,7 @@
 package marcelodev.comu_carona.controller
 
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -47,11 +49,17 @@ class CarRideReservationsController(
         ]
     )
     @GetMapping("/my-reservations", produces = ["application/json"])
-    fun findMyReservations(): ResponseEntity<*> {
+    fun findMyReservations(
+        @Parameter(description = "Status of the reservation to filter by", required = false)
+        @RequestParam(required = false) status: String?
+    ): ResponseEntity<*> {
         val authentication: User = SecurityContextHolder.getContext().authentication.principal as User
 
         val myReservation: List<CarRideMyReservationVO> =
-            carRideReservationService.findMyReservations(authentication.getUserId())
+            carRideReservationService.findMyReservations(
+                userId = authentication.getUserId(),
+                status = status
+            )
         return ResponseEntity.ok(myReservation)
     }
 }

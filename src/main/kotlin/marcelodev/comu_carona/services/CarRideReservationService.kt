@@ -4,6 +4,7 @@ import marcelodev.comu_carona.exceptions.ResourceNotFoundException
 import marcelodev.comu_carona.mapper.CustomMapper
 import marcelodev.comu_carona.models.CarRide
 import marcelodev.comu_carona.models.ReservationCarRide
+import marcelodev.comu_carona.models.enums.CarRideState.*
 import marcelodev.comu_carona.repository.CarRideRepository
 import marcelodev.comu_carona.repository.ReservationCarRideRepository
 import marcelodev.comu_carona.v1.rider.CarRideMyReservationVO
@@ -33,21 +34,85 @@ class CarRideReservationService(
     /**
      * Find my reservations and my car rides
      * @param userId String
+     * @param status String
      * @return List<CarRideMyReservationVO>
      */
-    fun findMyReservations(userId: String): List<CarRideMyReservationVO> {
-        logger.info("Finding reservations")
-        val myCarRides: List<CarRide> = carRideRepository.findCarRideByRiderId(userId) ?: emptyList()
-        val reservations: List<ReservationCarRide> = findReservationByUserId(userId)
+    fun findMyReservations(
+        userId: String,
+        status: String?
+    ): List<CarRideMyReservationVO> {
+        logger.info("Finding reservations, userId: $userId, status: $status")
 
-        logger.info("Reservations found: $reservations")
-        val myReservationList = handleMyReservationList(
-            userId = userId,
-            myCarRide = myCarRides,
-            reservations = reservations
-        )
+        when (status) {
+            MY_RIDE.toString() -> {
+                val myCarRides: List<CarRide> = carRideRepository.findCarRideByRiderId(userId) ?: emptyList()
 
-        logger.info("Reservations handled successfully: $myReservationList")
+                logger.info("Car rides found: $myCarRides")
+                return handleCarRideListToMyReservationVO(
+                    userId = userId,
+                    carRideList = myCarRides
+                )
+            }
+
+            IN_PROGRESS.toString(), FINISHED.toString(), CANCELED.toString() -> {
+                val reservations: List<ReservationCarRide> =
+                    reservationCarRideRepository.findReservationByUserId(userId) ?: emptyList()
+
+                logger.info("Reservations found: $reservations")
+                return handleMyReservationListWithStatus(
+                    userId = userId,
+                    reservations = reservations,
+                    status = status
+                )
+            }
+
+            else -> {
+                val myCarRides: List<CarRide> = carRideRepository.findCarRideByRiderId(userId) ?: emptyList()
+                val reservations: List<ReservationCarRide> =
+                    reservationCarRideRepository.findReservationByUserId(userId) ?: emptyList()
+
+                logger.info("Car rides found: $myCarRides")
+                logger.info("Reservations found: $reservations")
+                return handleMyReservationList(
+                    userId = userId,
+                    myCarRide = myCarRides,
+                    reservations = reservations
+                )
+            }
+        }
+    }
+
+    /**
+     * Handle my reservation list with status
+     * @param userId String
+     * @param reservations List<ReservationCarRide>
+     * @param status String
+     * @return List<CarRideMyReservationVO>
+     */
+    private fun handleMyReservationListWithStatus(
+        userId: String,
+        reservations: List<ReservationCarRide>,
+        status: String
+    ): List<CarRideMyReservationVO> {
+        logger.info("Handling reservations to car rides with status: $status, userId: $userId, reservations: $reservations")
+        val myReservationList: MutableList<CarRideMyReservationVO> = mutableListOf()
+
+        reservations.map { reservation ->
+            val carRide: CarRide? = carRideRepository.findCarRideByIdAndStatus(
+                id = reservation.carRiderUuid,
+                status = status
+            )
+
+            if(carRide != null) {
+                val myReservationVO = carRide.parseRideToCarRideMyReservationVO(
+                    userId = userId,
+                    customMapper = customMapper
+                )
+                myReservationList.add(myReservationVO)
+            }
+        }
+
+        logger.info("Reservations handled successfully")
         return myReservationList
     }
 
@@ -55,6 +120,7 @@ class CarRideReservationService(
      * Handle my reservation list
      * @param userId String
      * @param reservations List<ReservationCarRide>
+     * @param status String
      * @return List<CarRideMyReservationVO>
      */
     private fun handleMyReservationList(
@@ -98,17 +164,5 @@ class CarRideReservationService(
                 customMapper = customMapper
             )
         }
-    }
-
-    /**
-     * Find reservation by user id
-     * @param userId String
-     * @return List<ReservationCarRide>
-     */
-    private fun findReservationByUserId(userId: String): List<ReservationCarRide> {
-        logger.info("Finding reservation by user id: $userId")
-        val reservations = reservationCarRideRepository.findReservationByUserId(userId) ?: emptyList()
-        logger.info("Reservations found: $reservations")
-        return reservations
     }
 }

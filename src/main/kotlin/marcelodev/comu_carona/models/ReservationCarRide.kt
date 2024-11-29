@@ -18,4 +18,5 @@ data class ReservationCarRide(
     var username: String = "",
     var birthDate: String = "",
     var phoneNumber: String = ""
+    // FALTA UM CREATE_AT AQUI
 )
