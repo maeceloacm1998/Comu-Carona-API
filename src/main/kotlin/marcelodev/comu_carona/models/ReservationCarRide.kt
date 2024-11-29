@@ -1,6 +1,7 @@
 package marcelodev.comu_carona.models
 
 import jakarta.persistence.*
+import java.time.LocalDateTime
 
 @Entity
 @Table(name = "car_ride_reservation")
@@ -17,6 +18,13 @@ data class ReservationCarRide(
 
     var username: String = "",
     var birthDate: String = "",
-    var phoneNumber: String = ""
-    // FALTA UM CREATE_AT AQUI
-)
+    var phoneNumber: String = "",
+    var createdAt: LocalDateTime? = null,
+) {
+    @PrePersist
+    fun prePersist() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now()
+        }
+    }
+}
