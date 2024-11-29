@@ -3,6 +3,8 @@ package marcelodev.comu_carona.services
 import marcelodev.comu_carona.exceptions.ResourceNotFoundException
 import marcelodev.comu_carona.mapper.CustomMapper
 import marcelodev.comu_carona.models.CarRide
+import marcelodev.comu_carona.models.ReservationCarRide
+import marcelodev.comu_carona.models.User
 import marcelodev.comu_carona.models.enums.CarRideState
 import marcelodev.comu_carona.repository.CarRideRepository
 import marcelodev.comu_carona.v1.rider.*
@@ -12,11 +14,11 @@ import java.util.logging.Logger
 @Service
 class CarRideService(
     private val carRideRepository: CarRideRepository,
-    private val customMapper: CustomMapper
+    private val reservationCarRideService: ReservationCarRideService,
+    private val customMapper: CustomMapper,
 ) {
 
     private val logger = Logger.getLogger(CarRideService::class.java.name)
-
 
     /**
      * Create a car ride
@@ -27,7 +29,7 @@ class CarRideService(
     fun createCarRide(
         carRide: CarRideVO,
         userId: String
-    ): CarRide {
+    ) {
         logger.info("Creating car ride with data: $carRide")
 
         val carRideEntity = customMapper.parseObject(carRide, CarRide::class.java)
@@ -37,7 +39,9 @@ class CarRideService(
         }
 
         logger.info("Car ride created successfully, entity: $carRideEntity")
-        return carRideRepository.save(carRideEntity)
+        carRideRepository.save(carRideEntity)
+
+        logger.info("Car ride created successfully")
     }
 
 
@@ -99,6 +103,30 @@ class CarRideService(
             ?: throw ResourceNotFoundException("No records found for this ID")
 
         logger.info("Car ride found: $carRide")
-        return carRide.parseRideToDetailsCarRideVO()
+        return carRide.parseRideToDetailsCarRideVO(customMapper)
+    }
+
+    /**
+     * Reserve car ride
+     * @param carRideId String
+     * @param userId String
+     * @return CarRide
+     * @throws ResourceNotFoundException
+     */
+    fun reserveCarRide(carRideId: String, user: User) {
+        logger.info("Reserving car ride with id: $carRideId")
+
+        val reservation = ReservationCarRide(
+            riderId = carRideId,
+            userId = user.getUserId(),
+            username = user.username,
+            birthDate = user.getBirthDate(),
+            phoneNumber = user.getPhoneNumber()
+        )
+
+        logger.info("Creating reservation car ride with data: $reservation")
+        reservationCarRideService.createReservationCarRide(reservation)
+
+        logger.info("Reservation car ride created successfully")
     }
 }

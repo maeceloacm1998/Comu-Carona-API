@@ -156,4 +156,39 @@ class CarRideController(
         val lastCarRide = carRideService.findCarRideById(id)
         return ResponseEntity.ok(lastCarRide)
     }
+
+    @Operation(
+        summary = "Reserve a car ride",
+        description = "This function reserves a car ride for the user",
+        tags = ["Car Ride"],
+        responses = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Car ride reserved successfully"
+            ),
+            ApiResponse(
+                responseCode = "400",
+                description = "Invalid data"
+            ),
+            ApiResponse(
+                responseCode = "401",
+                description = "Unauthorized"
+            )
+        ]
+    )
+    @PostMapping("/details/reservationRide/{carRideId}", produces = ["application/json"])
+    fun reserveCarRide(@PathVariable carRideId: String?): ResponseEntity<*> {
+        if (carRideId.isNullOrBlank()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Id is required")
+        }
+
+        val authentication: User = SecurityContextHolder.getContext().authentication.principal as User
+        carRideService.reserveCarRide(
+            carRideId = carRideId,
+            user = authentication
+        )
+
+        return ResponseEntity.ok("Car ride reserved successfully")
+    }
 }

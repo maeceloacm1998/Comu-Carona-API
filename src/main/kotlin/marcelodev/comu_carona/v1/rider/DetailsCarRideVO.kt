@@ -1,5 +1,6 @@
 package marcelodev.comu_carona.v1.rider
 
+import marcelodev.comu_carona.mapper.CustomMapper
 import marcelodev.comu_carona.models.CarRide
 import marcelodev.comu_carona.utils.CarRideUtils.createDescription
 import marcelodev.comu_carona.utils.CarRideUtils.createRideDescription
@@ -16,11 +17,12 @@ data class DetailsCarRideVO(
     var destinationAddress: String? = "",
     var waitingHour: String? = "",
     var destinationHour: String? = "",
-    val bottomSheetCarRideUser: BottomSheetCarRideUserVO
+    val reservations: List<ReservationCarRideVO> = mutableListOf(),
+    val bottomSheetCarRideUser: BottomSheetCarRideUserVO,
     // FALTA IMPLEMENTAR VALIDACAO SE EXISTE VAGA
 )
 
-fun CarRide.parseRideToDetailsCarRideVO(): DetailsCarRideVO {
+fun CarRide.parseRideToDetailsCarRideVO(customMapper: CustomMapper): DetailsCarRideVO {
     return DetailsCarRideVO(
         id = this.uuid!!,
         dateTitle = formatDateTime(this.createdAt.toString()),
@@ -41,6 +43,7 @@ fun CarRide.parseRideToDetailsCarRideVO(): DetailsCarRideVO {
         destinationAddress = this.destinationAddress,
         waitingHour = this.destinationHour,
         destinationHour = this.destinationHour,
+        reservations = customMapper.parseListObject(this.reservations, ReservationCarRideVO::class.java),
         bottomSheetCarRideUser = BottomSheetCarRideUserVO(
             bottomSheetRiderUsername = this.user.username,
             bottomSheetRiderDescription = formatBirthDate(this.user.getBirthDate()),
