@@ -1,11 +1,15 @@
 package marcelodev.comu_carona.controller
 
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
 import marcelodev.comu_carona.models.User
 import marcelodev.comu_carona.services.CarRideService
+import marcelodev.comu_carona.v1.rider.AvailableCarRidesVO
 import marcelodev.comu_carona.v1.rider.CarRideVO
+import marcelodev.comu_carona.v1.rider.DetailsCarRideVO
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
@@ -21,11 +25,10 @@ class CarRideController(
     @Operation(
         summary = "Create a car ride",
         description = "This function creates a car ride",
-        tags = ["Car Ride"],
         responses = [
             ApiResponse(
-                responseCode = "201",
-                description = "Car ride created successfully"
+                responseCode = "200",
+                description = "Car ride created successfully",
             ),
             ApiResponse(
                 responseCode = "400",
@@ -79,11 +82,15 @@ class CarRideController(
     @Operation(
         summary = "Find last car ride",
         description = "This function finds the last car ride",
-        tags = ["Car Ride"],
         responses = [
             ApiResponse(
                 responseCode = "200",
-                description = "Car ride found successfully"
+                description = "Car ride found successfully",
+                content = [
+                    Content(
+                        schema = Schema(implementation = CarRideVO::class)
+                    )
+                ]
             ),
             ApiResponse(
                 responseCode = "400",
@@ -96,7 +103,7 @@ class CarRideController(
         ]
     )
     @GetMapping("/find-last", produces = ["application/json"])
-    fun findLastCarRide(): ResponseEntity<*> {
+    private fun findLastCarRide(): ResponseEntity<*> {
         val authentication: User = SecurityContextHolder.getContext().authentication.principal as User
 
         val lastCarRide = carRideService.findLastCarRideByUserId(authentication.getUserId())
@@ -107,11 +114,15 @@ class CarRideController(
     @Operation(
         summary = "Get available car rides",
         description = "This function retrieves a list of available car rides",
-        tags = ["Car Ride"],
         responses = [
             ApiResponse(
                 responseCode = "200",
-                description = "Available car rides retrieved successfully"
+                description = "Available car rides retrieved successfully",
+                content = [
+                    Content(
+                        schema = Schema(implementation = AvailableCarRidesVO::class)
+                    )
+                ]
             ),
             ApiResponse(
                 responseCode = "401",
@@ -130,11 +141,15 @@ class CarRideController(
     @Operation(
         summary = "Get car ride details",
         description = "This function retrieves the details of a car ride",
-        tags = ["Car Ride"],
         responses = [
             ApiResponse(
                 responseCode = "200",
-                description = "Car ride details retrieved successfully"
+                description = "Car ride details retrieved successfully",
+                content = [
+                    Content(
+                        schema = Schema(implementation = DetailsCarRideVO::class)
+                    )
+                ]
             ),
             ApiResponse(
                 responseCode = "400",
@@ -160,7 +175,6 @@ class CarRideController(
     @Operation(
         summary = "Reserve a car ride",
         description = "This function reserves a car ride for the user",
-        tags = ["Car Ride"],
         responses = [
             ApiResponse(
                 responseCode = "200",
@@ -176,16 +190,16 @@ class CarRideController(
             )
         ]
     )
-    @PostMapping("/details/reservationRide/{carRideId}", produces = ["application/json"])
-    fun reserveCarRide(@PathVariable carRideId: String?): ResponseEntity<*> {
-        if (carRideId.isNullOrBlank()) {
+    @PostMapping("/details/reservationRide/{id}", produces = ["application/json"])
+    fun reserveCarRide(@PathVariable id: String?): ResponseEntity<*> {
+        if (id.isNullOrBlank()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Id is required")
         }
 
         val authentication: User = SecurityContextHolder.getContext().authentication.principal as User
         carRideService.reserveCarRide(
-            carRideId = carRideId,
+            carRideId = id,
             user = authentication
         )
 

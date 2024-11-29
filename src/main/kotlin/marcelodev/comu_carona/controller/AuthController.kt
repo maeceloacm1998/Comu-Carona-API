@@ -29,7 +29,6 @@ class AuthController {
         description = "Essa função serve para autenticar o usuário e retornar um token."
                 + "O token é necessário para acessar os endpoints protegidos."
                 + "O token deve ser passado no header da requisição com a chave Authorization e o valor Bearer token",
-        tags = ["Auth"],
         responses = [
             ApiResponse(
                 responseCode = "200",
@@ -82,11 +81,15 @@ class AuthController {
     @Operation(
         summary = "Criar novo usuário",
         description = "Essa função serve para criar um novo usuário",
-        tags = ["Auth"],
         responses = [
             ApiResponse(
                 responseCode = "200",
                 description = "Usuario criado com sucesso",
+                content = [
+                    Content(
+                        schema = Schema(implementation = TokenVO::class)
+                    )
+                ]
             ),
             ApiResponse(
                 responseCode = "409",
@@ -124,7 +127,9 @@ class AuthController {
     }
 
     @Operation(
-        summary = "Refresh token", description = "Refresh", tags = ["Auth"], responses = [
+        summary = "Refresh token",
+        description = "Refresh",
+        responses = [
             ApiResponse(
                 responseCode = "200",
                 description = "Token refreshed successfully",

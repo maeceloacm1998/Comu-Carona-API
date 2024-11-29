@@ -27,7 +27,6 @@ class ExampleController(
     @Operation(
         summary = "Find all examples",
         description = "Find all examples recorded in the database",
-        tags = ["Example"],
         responses = [
             ApiResponse(
                 responseCode = "200", description = "Success", content = [
