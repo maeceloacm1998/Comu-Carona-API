@@ -17,9 +17,9 @@ data class DetailsCarRideVO(
     var destinationAddress: String? = "",
     var waitingHour: String? = "",
     var destinationHour: String? = "",
-    val reservations: List<ReservationCarRideVO> = mutableListOf(),
-    val bottomSheetCarRideUser: BottomSheetCarRideUserVO,
-    // FALTA IMPLEMENTAR VALIDACAO SE EXISTE VAGA
+    var isFullSeats: Boolean = false,
+    var reservations: List<ReservationCarRideVO> = mutableListOf(),
+    var bottomSheetCarRideUser: BottomSheetCarRideUserVO = BottomSheetCarRideUserVO(),
 )
 
 fun CarRide.parseRideToDetailsCarRideVO(customMapper: CustomMapper): DetailsCarRideVO {
@@ -45,6 +45,7 @@ fun CarRide.parseRideToDetailsCarRideVO(customMapper: CustomMapper): DetailsCarR
         destinationAddress = this.destinationAddress,
         waitingHour = this.destinationHour,
         destinationHour = this.destinationHour,
+        isFullSeats = this.quantitySeats == reservations.size,
         reservations = reservations.map { it.birthDate = formatBirthDate(it.birthDate); it },
         bottomSheetCarRideUser = BottomSheetCarRideUserVO(
             bottomSheetRiderUsername = this.user.username,
