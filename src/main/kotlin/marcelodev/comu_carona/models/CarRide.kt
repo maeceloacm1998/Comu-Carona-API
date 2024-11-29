@@ -31,7 +31,7 @@ data class CarRide(
     var user: User,
 
     @OneToMany(cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
-    @JoinColumn(name = "rider_id", referencedColumnName = "uuid", insertable = false, updatable = false)
+    @JoinColumn(name = "car_rider_uuid", referencedColumnName = "uuid", insertable = false, updatable = false)
     var reservations: MutableList<ReservationCarRide> = mutableListOf()
 ) {
     @PrePersist

@@ -1,6 +1,6 @@
-CREATE TABLE IF NOT EXISTS `reservation_car_ride` (
+CREATE TABLE IF NOT EXISTS `car_ride_reservation` (
     `id` BIGINT NOT NULL AUTO_INCREMENT,
-    `rider_id` VARCHAR(255) NOT NULL,
+    `car_rider_uuid` VARCHAR(255) NOT NULL,
     `user_id` VARCHAR(255) NOT NULL,
     `username` VARCHAR(255),
     `birth_date` DATE,

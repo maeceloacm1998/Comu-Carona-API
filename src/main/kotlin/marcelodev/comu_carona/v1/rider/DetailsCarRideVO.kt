@@ -23,6 +23,8 @@ data class DetailsCarRideVO(
 )
 
 fun CarRide.parseRideToDetailsCarRideVO(customMapper: CustomMapper): DetailsCarRideVO {
+    val reservations = customMapper.parseListObject(this.reservations, ReservationCarRideVO::class.java)
+
     return DetailsCarRideVO(
         id = this.uuid!!,
         dateTitle = formatDateTime(this.createdAt.toString()),
@@ -43,7 +45,7 @@ fun CarRide.parseRideToDetailsCarRideVO(customMapper: CustomMapper): DetailsCarR
         destinationAddress = this.destinationAddress,
         waitingHour = this.destinationHour,
         destinationHour = this.destinationHour,
-        reservations = customMapper.parseListObject(this.reservations, ReservationCarRideVO::class.java),
+        reservations = reservations.map { it.birthDate = formatBirthDate(it.birthDate); it },
         bottomSheetCarRideUser = BottomSheetCarRideUserVO(
             bottomSheetRiderUsername = this.user.username,
             bottomSheetRiderDescription = formatBirthDate(this.user.getBirthDate()),

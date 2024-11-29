@@ -117,7 +117,7 @@ class CarRideService(
         logger.info("Reserving car ride with id: $carRideId")
 
         val reservation = ReservationCarRide(
-            riderId = carRideId,
+            carRiderUuid = carRideId,
             userId = user.getUserId(),
             username = user.username,
             birthDate = user.getBirthDate(),
