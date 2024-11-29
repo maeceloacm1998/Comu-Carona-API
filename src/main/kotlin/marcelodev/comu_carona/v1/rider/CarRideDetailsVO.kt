@@ -18,12 +18,12 @@ data class DetailsCarRideVO(
     var waitingHour: String? = "",
     var destinationHour: String? = "",
     var isFullSeats: Boolean = false,
-    var reservations: List<ReservationCarRideVO> = mutableListOf(),
-    var bottomSheetCarRideUser: BottomSheetCarRideUserVO = BottomSheetCarRideUserVO(),
+    var reservations: List<CarRideReservationVO> = mutableListOf(),
+    var bottomSheetCarRideUser: CarRideUserBottomSheetVO = CarRideUserBottomSheetVO(),
 )
 
 fun CarRide.parseRideToDetailsCarRideVO(customMapper: CustomMapper): DetailsCarRideVO {
-    val reservations = customMapper.parseListObject(this.reservations, ReservationCarRideVO::class.java)
+    val reservations = customMapper.parseListObject(this.reservations, CarRideReservationVO::class.java)
 
     return DetailsCarRideVO(
         id = this.uuid!!,
@@ -47,7 +47,7 @@ fun CarRide.parseRideToDetailsCarRideVO(customMapper: CustomMapper): DetailsCarR
         destinationHour = this.destinationHour,
         isFullSeats = this.quantitySeats == reservations.size,
         reservations = reservations.map { it.birthDate = formatBirthDate(it.birthDate); it },
-        bottomSheetCarRideUser = BottomSheetCarRideUserVO(
+        bottomSheetCarRideUser = CarRideUserBottomSheetVO(
             bottomSheetRiderUsername = this.user.username,
             bottomSheetRiderDescription = formatBirthDate(this.user.getBirthDate()),
             bottomSheetRiderPhoneNumber = this.user.getPhoneNumber()

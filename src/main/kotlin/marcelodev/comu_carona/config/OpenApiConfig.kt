@@ -13,10 +13,10 @@ class OpenApiConfig {
     fun customOpenApi(): OpenAPI {
         return OpenAPI().info(
             Info()
-                .title("Rest API with Spring Boot 2.5.4")
+                .title("Comu-Carona com Spring Boot 2.5.4")
                 .version("v1")
                 .description(
-                    "Rest API with Spring Boot" +
+                    "Comu-Carona com Spring Boot" +
                             "<br>Developed by: <b>Marcelo</b>"
                 )
                 .termsOfService("http://swagger.io/terms/")

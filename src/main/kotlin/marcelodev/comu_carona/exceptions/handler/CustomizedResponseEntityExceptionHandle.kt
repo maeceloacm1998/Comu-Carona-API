@@ -34,4 +34,15 @@ class CustomizedResponseEntityExceptionHandle {
         )
         return ResponseEntity<ExceptionResponse>(errorDetails, HttpStatus.FORBIDDEN)
     }
+
+    @ExceptionHandler(Exception::class)
+    fun handleInvalidCarRideStateException(ex: Exception, request: WebRequest) :
+            ResponseEntity<ExceptionResponse> {
+        val errorDetails = ExceptionResponse(
+            Date(),
+            ex.message,
+            request.getDescription(false)
+        )
+        return ResponseEntity<ExceptionResponse>(errorDetails, HttpStatus.BAD_REQUEST)
+    }
 }

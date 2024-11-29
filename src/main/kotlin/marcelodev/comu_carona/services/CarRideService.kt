@@ -14,7 +14,7 @@ import java.util.logging.Logger
 @Service
 class CarRideService(
     private val carRideRepository: CarRideRepository,
-    private val reservationCarRideService: ReservationCarRideService,
+    private val carRideReservationService: CarRideReservationService,
     private val customMapper: CustomMapper,
 ) {
 
@@ -125,7 +125,7 @@ class CarRideService(
         )
 
         logger.info("Creating reservation car ride with data: $reservation")
-        reservationCarRideService.createReservationCarRide(reservation)
+        carRideReservationService.createReservationCarRide(reservation)
 
         logger.info("Reservation car ride created successfully")
     }
