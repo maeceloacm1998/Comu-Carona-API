@@ -1,10 +1,8 @@
 package marcelodev.comu_carona.mapper
 
 import marcelodev.comu_carona.models.CarRide
-import marcelodev.comu_carona.models.Example
 import marcelodev.comu_carona.models.User
 import marcelodev.comu_carona.v1.rider.CarRideVO
-import marcelodev.comu_carona.v1.ExampleVO
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.modelmapper.ModelMapper
 import java.time.LocalDateTime
@@ -46,18 +44,5 @@ class ModelMapperTest {
         assertEquals(carRide.destinationHour, carRideVO.destinationHour)
         assertEquals(carRide.status, carRideVO.status)
         assertEquals(carRide.isTwoPassengersBehind, carRideVO.isTwoPassengersBehind)
-    }
-
-    @Test
-    fun testExampleToExampleVOMapping() {
-        val example = Example(
-            id = 1,
-            name = "John Doe",
-        )
-
-        val exampleVO = modelMapper.map(example, ExampleVO::class.java)
-
-        assertEquals(example.id, exampleVO.id)
-        assertEquals(example.name, exampleVO.name)
     }
 }
