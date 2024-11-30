@@ -129,4 +129,29 @@ class CarRideService(
 
         logger.info("Reservation car ride created successfully")
     }
+
+    /**
+     * Delete car ride
+     * @param carRideId String
+     * @param userId String
+     * @throws ResourceNotFoundException
+     */
+    fun deleteCarRide(carRideId: String, userId: String) {
+        logger.info("Deleting car ride with id: $carRideId, by user id: $userId")
+        val carRide = carRideRepository.findCarRideById(carRideId)
+            ?: throw ResourceNotFoundException("No records found for this ID")
+
+        carRide.reservations.forEach { reservation ->
+            logger.info("Deleting reservation car ride with id: ${reservation.carRiderUuid}")
+            carRideReservationService.deleteReservationCarRide(reservation.carRiderUuid)
+        }
+
+        logger.info("Deleting car ride with id: $carRideId")
+        carRideRepository.deleteCarRideByUuidAndUserId(
+            uuid = carRideId,
+            userId = userId
+        )
+
+        logger.info("Car ride deleted successfully")
+    }
 }

@@ -83,6 +83,32 @@ class CarRideReservationService(
     }
 
     /**
+     * Delete reservation car ride specified user ID
+     * @param carRiderUUID String
+     * @param userId String
+     * @return void
+     */
+    fun deleteReservationCarRideSpecifUserId(carRiderUUID: String, userId: String) {
+        logger.info("Deleting reservation car ride with ID: $carRiderUUID, userId: $userId")
+        reservationCarRideRepository.deleteReservationCarRideByIdAndUserId(
+            carRiderUUID = carRiderUUID,
+            userId = userId
+        )
+        logger.info("Reservation car ride deleted successfully")
+    }
+
+    /**
+     * Delete reservation car ride
+     * @param carRiderUUID String
+     * @return void
+     */
+    fun deleteReservationCarRide(carRiderUUID: String) {
+        logger.info("Deleting reservation car ride with ID: $carRiderUUID")
+        reservationCarRideRepository.deleteReservationCarRideById(carRiderUUID)
+        logger.info("Reservation car ride deleted successfully")
+    }
+
+    /**
      * Handle my reservation list with status
      * @param userId String
      * @param reservations List<ReservationCarRide>

@@ -205,4 +205,39 @@ class CarRideController(
 
         return ResponseEntity.ok("Car ride reserved successfully")
     }
+
+    @Operation(
+        summary = "Delete a car ride",
+        description = "This function deletes a car ride",
+        responses = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Car ride deleted successfully"
+            ),
+            ApiResponse(
+                responseCode = "400",
+                description = "Invalid data"
+            ),
+            ApiResponse(
+                responseCode = "401",
+                description = "Unauthorized"
+            )
+        ]
+    )
+    @DeleteMapping("/delete/{id}", produces = ["application/json"])
+    fun deleteCarRide(@PathVariable id: String?): ResponseEntity<*> {
+        val authentication: User = SecurityContextHolder.getContext().authentication.principal as User
+
+        if (id.isNullOrBlank()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Id is required")
+        }
+
+        carRideService.deleteCarRide(
+            carRideId = id,
+            userId = authentication.getUserId()
+        )
+
+        return ResponseEntity.ok("Car ride deleted successfully")
+    }
 }
