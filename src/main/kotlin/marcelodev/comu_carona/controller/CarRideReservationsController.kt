@@ -62,16 +62,16 @@ class CarRideReservationsController(
     }
 
     @Operation(
-        summary = "Create a reservation car ride",
-        description = "This function creates a reservation car ride",
+        summary = "Delete reservation",
+        description = "This function deletes a reservation by id",
         responses = [
             ApiResponse(
                 responseCode = "200",
-                description = "Reservation car ride created successfully",
+                description = "Reservation deleted successfully",
             ),
             ApiResponse(
                 responseCode = "400",
-                description = "Invalid data",
+                description = "Invalid data, error when trying to delete reservation",
             ),
             ApiResponse(
                 responseCode = "401",
