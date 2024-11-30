@@ -138,8 +138,10 @@ class CarRideService(
      */
     fun deleteCarRide(carRideId: String, userId: String) {
         logger.info("Deleting car ride with id: $carRideId, by user id: $userId")
-        val carRide = carRideRepository.findCarRideById(carRideId)
-            ?: throw ResourceNotFoundException("No records found for this ID")
+        val carRide = carRideRepository.findCarRideByIdAndRiderId(
+            id = carRideId,
+            riderId = userId
+        ) ?: throw ResourceNotFoundException("No records found for this ID $carRideId and riderId combination $userId")
 
         carRide.reservations.forEach { reservation ->
             logger.info("Deleting reservation car ride with id: ${reservation.carRiderUuid}")

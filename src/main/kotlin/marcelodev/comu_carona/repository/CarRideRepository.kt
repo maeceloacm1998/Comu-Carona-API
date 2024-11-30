@@ -20,6 +20,9 @@ interface CarRideRepository : JpaRepository<CarRide, Long> {
     @Query("SELECT cr FROM CarRide cr JOIN FETCH cr.user u WHERE cr.uuid =:id")
     fun findCarRideById(id: String): CarRide?
 
+    @Query("SELECT cr FROM CarRide cr JOIN FETCH cr.user u WHERE cr.uuid =:id AND cr.riderId =:riderId")
+    fun findCarRideByIdAndRiderId(id: String, riderId: String): CarRide?
+
     @Query("SELECT cr FROM CarRide cr JOIN FETCH cr.user u WHERE cr.uuid =:id AND cr.status =:status")
     fun findCarRideByIdAndStatus(id: String, status: String): CarRide?
 
