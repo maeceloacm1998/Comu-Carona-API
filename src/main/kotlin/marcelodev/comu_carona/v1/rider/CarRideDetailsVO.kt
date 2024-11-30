@@ -2,6 +2,7 @@ package marcelodev.comu_carona.v1.rider
 
 import marcelodev.comu_carona.mapper.CustomMapper
 import marcelodev.comu_carona.models.CarRide
+import marcelodev.comu_carona.utils.CarRideUtils
 import marcelodev.comu_carona.utils.CarRideUtils.createDescription
 import marcelodev.comu_carona.utils.CarRideUtils.createRideDescription
 import marcelodev.comu_carona.utils.CarRideUtils.formatBirthDate
@@ -19,6 +20,7 @@ data class DetailsCarRideVO(
     var destinationHour: String? = "",
     var isFullSeats: Boolean = false,
     var reservations: List<CarRideReservationVO> = mutableListOf(),
+    var shareDeeplink: String = "",
     var bottomSheetCarRideUser: CarRideUserBottomSheetVO = CarRideUserBottomSheetVO(),
 )
 
@@ -47,9 +49,24 @@ fun CarRide.parseRideToDetailsCarRideVO(customMapper: CustomMapper): DetailsCarR
         destinationHour = this.destinationHour,
         isFullSeats = this.quantitySeats == reservations.size,
         reservations = reservations.map { it.birthDate = formatBirthDate(it.birthDate); it },
+        shareDeeplink = CarRideUtils.createShareCarRide(
+            id = this.uuid!!,
+            riderUserName = this.user.username,
+            waitingAddress = this.waitingAddress,
+            destinationAddress = this.destinationAddress,
+            waitingHour = this.waitingHour,
+            destinationHour = this.destinationHour,
+        ),
         bottomSheetCarRideUser = CarRideUserBottomSheetVO(
+            bottomSheetRiderPlate = this.carPlate,
             bottomSheetRiderUsername = this.user.username,
             bottomSheetRiderDescription = formatBirthDate(this.user.getBirthDate()),
+            bottomSheetRiderPhoto = "", // COLOCAR URL FOTO DPS
+            bottomSheetCarRiderDescription = createRideDescription(
+                carModel = this.carModel,
+                carColor = this.carColor,
+                carPlate = this.carPlate,
+            ),
             bottomSheetRiderPhoneNumber = this.user.getPhoneNumber()
         )
     )
