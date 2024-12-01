@@ -6,7 +6,8 @@ build/
 !**/src/test/**/build/
 
 # Ignore Firebase configuration file in config directory in resorces
-!**/src/main/**/resources/config/firebase/**
+src/main/resources/config/firebase/**
+src/main/resources/firebase/comu-carona-firebase.json
 
 ### STS ###
 .apt_generated
