@@ -25,6 +25,9 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("mysql:mysql-connector-java:8.0.33")
 
+	// Google Maps
+	implementation("com.google.maps:google-maps-services:2.1.2")
+
 	// FLYWAY
 	implementation("org.flywaydb:flyway-core:9.22.0")
 	implementation("org.flywaydb:flyway-mysql:9.22.0")
