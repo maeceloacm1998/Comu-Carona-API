@@ -48,7 +48,10 @@ fun CarRide.parseRideToDetailsCarRideVO(customMapper: CustomMapper): DetailsCarR
         waitingHour = this.destinationHour,
         destinationHour = this.destinationHour,
         isFullSeats = this.quantitySeats == reservations.size,
-        reservations = reservations.map { it.birthDate = formatBirthDate(it.birthDate); it },
+        reservations = reservations.map {
+            it.photoUrl = this.user.getPhotoUrl()
+            it.birthDate = formatBirthDate(it.birthDate); it
+        },
         shareDeeplink = CarRideUtils.createShareCarRide(
             id = this.uuid!!,
             riderUserName = this.user.username,
@@ -61,7 +64,7 @@ fun CarRide.parseRideToDetailsCarRideVO(customMapper: CustomMapper): DetailsCarR
             bottomSheetRiderPlate = this.carPlate,
             bottomSheetRiderUsername = this.user.username,
             bottomSheetRiderDescription = formatBirthDate(this.user.getBirthDate()),
-            bottomSheetRiderPhoto = "", // COLOCAR URL FOTO DPS
+            bottomSheetRiderPhoto = this.user.getPhotoUrl(),
             bottomSheetCarRiderDescription = createRideDescription(
                 carModel = this.carModel,
                 carColor = this.carColor,

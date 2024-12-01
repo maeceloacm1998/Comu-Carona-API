@@ -100,6 +100,22 @@ class AuthService {
         return ResponseEntity.ok(tokenResponse)
     }
 
+    fun updatePhotoImageUrl(username: String, photoUrl: String): ResponseEntity<*> {
+        logger.info("Trying update photo url to user $username")
+
+        val user = repository.findByUserId(username)
+        if (user == null) {
+            logger.warning("Username not found")
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Username not found")
+        }
+
+        user.setPhotoUrl(photoUrl)
+        repository.save(user)
+
+        logger.info("Photo url updated successfully")
+        return ResponseEntity.ok().body("Photo url updated successfully")
+    }
+
     private fun createUserWithData(username: String, data: UpdateRegisterVO): User {
         val encryptedPassword = passwordEncoder.encode(username)
         val user = User().apply {

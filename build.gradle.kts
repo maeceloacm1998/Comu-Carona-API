@@ -28,6 +28,15 @@ dependencies {
 	// Google Maps
 	implementation("com.google.maps:google-maps-services:2.1.2")
 
+	// Coroutines
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.7.3")
+
+	// Firebase
+	implementation("com.google.firebase:firebase-admin:9.2.0")
+	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.reactivestreams:reactive-streams:1.0.3")
+
 	// FLYWAY
 	implementation("org.flywaydb:flyway-core:9.22.0")
 	implementation("org.flywaydb:flyway-mysql:9.22.0")

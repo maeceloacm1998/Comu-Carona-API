@@ -31,6 +31,7 @@ fun CarRide.parseRideToCarRideMyReservationVO(userId: String, customMapper: Cust
         destinationHour = this.destinationHour,
         states = states,
         riderInformation = CarRideReservationVO(
+            photoUrl = this.user.getPhotoUrl(),
             birthDate = this.user.getBirthDate(),
             phoneNumber = this.user.getPhoneNumber(),
             username = this.user.username

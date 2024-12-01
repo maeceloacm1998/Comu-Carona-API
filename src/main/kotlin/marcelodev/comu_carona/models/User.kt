@@ -93,6 +93,10 @@ class User : UserDetails {
         this.photoUrl = photoUrl
     }
 
+    fun getPhotoUrl(): String {
+        return photoUrl!!
+    }
+
     fun getUserId(): String {
         return userId!!
     }
